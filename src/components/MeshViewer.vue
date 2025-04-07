@@ -46,6 +46,7 @@
             const center = new THREE.Vector3()
             box.getCenter(center)
             object.position.sub(center)  // 将模型中心移到 (0, 0, 0)
+            object.scale.set(100, 100, 100)
 
             // 清除旧模型
             if (this.meshObject) {
