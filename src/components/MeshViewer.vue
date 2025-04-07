@@ -32,47 +32,54 @@
       this.meshObject = null
     },
     methods: {
+      loadAndDisplayObj(objText) {
+        const loader = new OBJLoader()
+        const object = loader.parse(objText)
+
+        // 自动缩放逻辑
+        const box = new THREE.Box3().setFromObject(object)
+        const size = new THREE.Vector3()
+        box.getSize(size)
+        const maxDim = Math.max(size.x, size.y, size.z)
+        const desiredSize = 100
+        const scale = desiredSize / maxDim
+        object.scale.setScalar(scale)
+
+        const newBox = new THREE.Box3().setFromObject(object)
+        const center = new THREE.Vector3()
+        newBox.getCenter(center)
+        object.position.sub(center)
+
+        // 清除旧模型
+        if (this.meshObject) {
+          this.scene.remove(this.meshObject)
+        }
+      
+        this.meshObject = object
+        this.scene.add(object)
+      },
+
       onFileSelected(file) {
         if (file && file.name.endsWith('.obj')) {
-          this.selectedFileName = file.name;
+
+          this.selectedFileName = file.name
 
           const reader = new FileReader()
+
           reader.onload = (e) => {
 
             const contents = e.target.result
-            const loader = new OBJLoader()
-            const object = loader.parse(contents)
 
-            const box = new THREE.Box3().setFromObject(object)
-
-            const size = new THREE.Vector3()
-            box.getSize(size)
-
-            const maxDim = Math.max(size.x, size.y, size.z)
-            const desiredSize = 100
-            const scale = desiredSize / maxDim
-            object.scale.setScalar(scale)
-
-
-            const newBox = new THREE.Box3().setFromObject(object)
-            const center = new THREE.Vector3()
-            newBox.getCenter(center)
-            object.position.sub(center)
-
-            // 清除旧模型
-            if (this.meshObject) {
-              this.scene.remove(this.meshObject)
-            }
-
-            this.meshObject = object
-            this.scene.add(object)
+            this.loadAndDisplayObj(contents)
           }
+
           reader.readAsText(file)
         } else {
           alert('Please upload a valid .obj file')
           this.selectedFileName = ''
         }
       },
+      
       initThreeJS() {
         // 创建场景
         this.scene = new THREE.Scene()
@@ -117,6 +124,15 @@
     },
     mounted() {
       this.initThreeJS()
+
+      fetch('/default1.obj')
+      .then(res => res.text())
+      .then(objText => {
+        this.loadAndDisplayObj(objText)  // ✅ 同样调用
+      })
+      .catch(err => {
+        console.error('默认模型加载失败：', err)
+      })
     }
   }
   </script>
