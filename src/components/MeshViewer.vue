@@ -38,15 +38,26 @@
 
           const reader = new FileReader()
           reader.onload = (e) => {
+
             const contents = e.target.result
             const loader = new OBJLoader()
             const object = loader.parse(contents)
 
             const box = new THREE.Box3().setFromObject(object)
+
+            const size = new THREE.Vector3()
+            box.getSize(size)
+
+            const maxDim = Math.max(size.x, size.y, size.z)
+            const desiredSize = 100
+            const scale = desiredSize / maxDim
+            object.scale.setScalar(scale)
+
+
+            const newBox = new THREE.Box3().setFromObject(object)
             const center = new THREE.Vector3()
-            box.getCenter(center)
-            object.position.sub(center)  // 将模型中心移到 (0, 0, 0)
-            object.scale.set(100, 100, 100)
+            newBox.getCenter(center)
+            object.position.sub(center)
 
             // 清除旧模型
             if (this.meshObject) {
