@@ -1,26 +1,52 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <div class="page-container">
+      <HeaderTitle />
+      <MyDivider />
+      <MeshViewer />
+      <MyDivider />
+      </div>
+  </div>
 </template>
 
+
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HeaderTitle from './components/HeaderTitle.vue'
+import MeshViewer from './components/MeshViewer.vue'
+import MyDivider from './components/MyDivider.vue'
+
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    HeaderTitle,
+    MyDivider,
+    MeshViewer
   }
 }
 </script>
 
 <style>
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  background-color: #ffffff;
+}
+
+.page-container {
+  width: 1100px;
+  margin: 0 auto; /* 水平居中 */
+  background-color: white;
+}
+
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  /* margin-top: 60px; */
 }
+
 </style>
